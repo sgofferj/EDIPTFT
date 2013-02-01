@@ -28,7 +28,7 @@
 
 class EDIPTFT {
   public:
-    EDIPTFT(int port, boolean smallprotocol);
+    EDIPTFT(int port, int smallprotocol);
     void sendData(char* data, int len);
     void clear();
     void invert();
@@ -58,5 +58,7 @@ class EDIPTFT {
     void removeTouchArea(char code,char n1);
   private:
     int _port;
-    boolean _smallprotocol;
+    int _smallprotocol;
+    void sendSmall(char* data, int len);
+};
 #endif

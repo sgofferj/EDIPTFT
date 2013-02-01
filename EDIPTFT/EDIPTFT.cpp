@@ -21,20 +21,23 @@
 //      Boston, MA 02110-1301 USA
 //
 
-EDIPTFT::EDIPTFT(int port, boolean smallprotocol) {
+#include <Arduino.h>
+#include <EDIPTFT.h>
+
+EDIPTFT::EDIPTFT(int port, int smallprotocol) {
   _port = port;
   _smallprotocol = smallprotocol;
 }
 
-void sendData(char* data, int len) {
-  if (_smallprotocol) {
+void EDIPTFT::sendData(char* data, int len) {
+  if (_smallprotocol > 0) {
   }
   else {
     unsigned char i;
     for(i=0; i < len; i++) {
       switch (_port) {
 	case 0 : {
-	  Serial0.write(data[i]);
+	  Serial.write(data[i]);
 	  break;
 	}
 	case 1 : {
@@ -54,7 +57,7 @@ void sendData(char* data, int len) {
   }
 }
 
-void EDIPTFT::sendSmall(char* data, byte len) {
+void EDIPTFT::sendSmall(char* data, int len) {
   unsigned char i, bcc;
   Serial3.write(0x11);
   bcc = 0x11;
