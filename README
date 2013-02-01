@@ -1,4 +1,4 @@
-
+------------------------------------------------------------------------------
 Library for controlling Electronic Assembly eDIPTFT displays
 
      Copyright (c) 2013 Stefan Gofferje. All rights reserved.
@@ -19,5 +19,15 @@ Library for controlling Electronic Assembly eDIPTFT displays
      Public License along with this library; if not, write to the
      Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
      Boston, MA 02110-1301 USA
+------------------------------------------------------------------------------
 
+There isn't much documentation yet. I have started to write the functions on
+25JAN2013 and converted them into a library on 01FEB2013. I'm mainly
+developing this library inside another projects, so functions are added as
+they are needed in that other project. Once the other project is ready, I
+might complete this library.
+
+Documentation on the eDIPTFT series is available from
+
+  http://www.lcd-module.com/
  

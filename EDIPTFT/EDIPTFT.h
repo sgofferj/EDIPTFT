@@ -28,7 +28,7 @@
 
 class EDIPTFT {
   public:
-    EDIPTFT(int port);
+    EDIPTFT(int port, boolean smallprotocol);
     void sendData(char* data, int len);
     void clear();
     void invert();
@@ -43,14 +43,14 @@ class EDIPTFT {
     void makeBargraphTouch(char no);
     void linkBargraphLight(char no);
     void deleteBargraph(char no,char n1);
-    void setLine(char fg, char bg);
     void setTextColor(char fg, char bg);
     void setTextFont(char font);
     void setTextAngle(char angle);
     void drawText(int x1, int y1, char justification,String text);
+    void setLineColor(char fg, char bg);
     void drawLine(int x1, int y1, int x2, int y2);
     void drawRect(int x1, int y1, int x2, int y2);
-    void Rectf(int x1, int y1, int x2, int y2, char color);
+    void drawRectf(int x1, int y1, int x2, int y2, char color);
     void defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, String text);
     void setTouchkeyColors(char n1, char n2, char n3, char s1, char s2, char s3);
     void setTouchkeyFont(char font);

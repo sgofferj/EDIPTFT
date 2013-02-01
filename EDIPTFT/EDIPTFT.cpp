@@ -167,7 +167,7 @@ void EDIPTFT::deleteBargraph(char no,char n1) {
   EDIPTFT::sendData(command,5);
 }
 
-void EDIPTFT::setLine(char fg, char bg) {
+void EDIPTFT::setLineColor(char fg, char bg) {
   char command [] = {
     27,'F','G',fg,bg
   };
@@ -229,7 +229,7 @@ void EDIPTFT::drawRect(int x1, int y1, int x2, int y2) {
   EDIPTFT::sendData(command,11);
 }
 
-void EDIPTFT::Rectf(int x1, int y1, int x2, int y2, char color) {
+void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
   char command [] = {
     27,'R','F',
     lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
