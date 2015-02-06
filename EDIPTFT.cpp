@@ -21,13 +21,16 @@
 //      Boston, MA 02110-1301 USA
 //
 
-#include <FastSerial.h>
-#include <EDIPTFT.h>
+#include <ediptft.h>
 
 #define DEBUG false
 
-EDIPTFT::EDIPTFT(int smallprotocol) {
+EDIPTFT::EDIPTFT(boolean smallprotocol) {
   _smallprotocol = smallprotocol;
+}
+
+void EDIPTFT::begin(long baud) {
+    Serial.begin(baud);
 }
 
 void EDIPTFT::sendByte(char data) {
@@ -64,7 +67,7 @@ void EDIPTFT::sendData(char* data, char len) {
     Serial.println();
   }
 
-  if (_smallprotocol > 0) {
+  if (_smallprotocol) {
     sendSmall(data,len);
   }
   else {
@@ -345,64 +348,80 @@ void EDIPTFT::setTextAngle(char angle) {
 void EDIPTFT::drawText(int x1, int y1, char justification,char* text) {
   byte len = strlen(text);
   byte i;
-  char helper [len+8];
+  char helper [len + 4 + 2 * COORD_SIZE];
   char command [] = {
     27,'Z',justification,
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+    #if COORD_SIZE == 1
+        x1, y1,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+    #endif
+
   };
-  for (i=0;i<=6;i++) helper[i] = command[i];
+  for (i=0;i<=4;i++) helper[i] = command[i];
   for (i=0;i<=len;i++) {
-      if (text[i] == '\0') {
-          len--;
-          break;
-      }
-      helper[i+7] = text[i];
+      helper[i+5] = text[i];
   }
-  sendData(helper,len+8);
+  sendData(helper,len+6);
 }
 
 void EDIPTFT::drawLine(int x1, int y1, int x2, int y2) {
   char command [] = {
     27,'G','D',
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
+    #endif
   };
-  sendData(command,11);
+  sendData(command,3 + 4 * COORD_SIZE);
 }
 
 void EDIPTFT::drawRect(int x1, int y1, int x2, int y2) {
   char command [] = {
     27,'G','R',
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
+    #endif
   };
-  sendData(command,11);
+  sendData(command,3 + 4 * COORD_SIZE);
 }
 
 void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
   char command [] = {
     27,'R','F',
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #endif
     color
   };
-  sendData(command,12);
+  sendData(command,4 + 4 * COORD_SIZE);
 }
 
 void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text) {
   byte len = strlen(text);
   byte i;
-  char helper [len+13];
+  char helper [len + 5 + 4 * COORD_SIZE];
   char command [] = {
     27,'A','T',
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #endif
     down,up
   };
-  for (i=0;i<=12;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) helper[i+13] = text[i];
-
-  sendData(helper,len+14);
+  for (i=0;i<5+4*COORD_SIZE;i++) helper[i] = command[i];
+  for (i=0;i<=len;i++) helper[i+5+4*COORD_SIZE] = text[i];
+  sendData(helper,len+6+4*COORD_SIZE);
 }
 
 void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text) {

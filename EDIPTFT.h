@@ -26,6 +26,16 @@
 
 #include <Arduino.h>
 
+//Devices
+#define EDIP128 1
+#define EDIP160 1
+#define EDIP240 1
+#define EDIP320 2
+
+//Set your device
+#define DEVICE EDIP240
+#define COORD_SIZE DEVICE  //Byte count for coordinates
+
 #define EA_BLACK 1
 #define EA_BLUE 2
 #define EA_RED 3
@@ -48,7 +58,8 @@
 
 class EDIPTFT {
   public:
-    EDIPTFT(int smallprotocol);
+    EDIPTFT(boolean smallprotocol=true);
+    void begin(long baud=115200);
     char readByte();
     char waitandreadByte();
     unsigned char datainBuffer();
@@ -91,7 +102,7 @@ class EDIPTFT {
     void setTouchGroup(char group);
     void removeTouchArea(char code,char n1);
   private:
-    int _smallprotocol;
+    boolean _smallprotocol;
     unsigned char bytesAvailable();
     void waitBytesAvailable();
     void sendByte(char data);
