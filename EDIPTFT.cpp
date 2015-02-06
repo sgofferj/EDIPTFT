@@ -26,54 +26,17 @@
 
 #define DEBUG false
 
-EDIPTFT::EDIPTFT(int port, int smallprotocol) {
-  _port = port;
+EDIPTFT::EDIPTFT(int smallprotocol) {
   _smallprotocol = smallprotocol;
 }
 
 void EDIPTFT::sendByte(char data) {
-  switch (_port) {
-    case 0 : {
-      Serial.write(data);
-      break;
-    }
-    case 1 : {
-      Serial1.write(data);
-      break;
-    }
-    case 2 : {
-      Serial2.write(data);
-      break;
-    }
-    case 3 : {
-      Serial3.write(data);
-      break;
-    }
-  }
-}  
+  Serial.write(data);
+}
 
 char EDIPTFT::readByte() {
-  char result;
-  switch (_port) {
-    case 0 : {
-      result = Serial.read();
-      break;
-    }
-    case 1 : {
-      result = Serial1.read();
-      break;
-    }
-    case 2 : {
-      result = Serial2.read();
-      break;
-    }
-    case 3 : {
-      result = Serial3.read();
-      break;
-    }
-  }
-  return result;
-}  
+  return Serial.read();
+}
 
 void EDIPTFT::waitBytesAvailable() {
   while (bytesAvailable() == 0) {
@@ -85,30 +48,11 @@ char EDIPTFT::waitandreadByte() {
   char result = readByte();
   return(result);
 }
-  
+
 
 unsigned char EDIPTFT::bytesAvailable() {
-  unsigned char result;
-  switch (_port) {
-    case 0 : {
-      result = Serial.available();
-      break;
-    }
-    case 1 : {
-      result = Serial1.available();
-      break;
-    }
-    case 2 : {
-      result = Serial2.available();
-      break;
-    }
-    case 3 : {
-      result = Serial3.available();
-      break;
-    }
-  }
-  return result;
-}  
+    return Serial.available();
+}
 
 void EDIPTFT::sendData(char* data, char len) {
   if (DEBUG) {
@@ -118,8 +62,8 @@ void EDIPTFT::sendData(char* data, char len) {
       Serial.print(" ");
     }
     Serial.println();
-  }  
-    
+  }
+
   if (_smallprotocol > 0) {
     sendSmall(data,len);
   }
@@ -134,14 +78,14 @@ void EDIPTFT::sendData(char* data, char len) {
 void EDIPTFT::sendSmall(char* data, char len) {
   unsigned char i, bcc;
   char ok = 0;
-  
+
   while (ok == 0) {
     sendByte(0x11);
     bcc = 0x11;
-    
+
     sendByte(len);
     bcc = bcc + len;
-    
+
     for(i=0; i < len; i++) {
       sendByte(data[i]);
       bcc = bcc + data[i];
@@ -164,12 +108,12 @@ void EDIPTFT::sendSmall(char* data, char len) {
 void EDIPTFT::sendSmallDC2(char* data, char len) {
   unsigned char i, bcc;
   char ok = 0;
-  
+
   while (ok == 0) {
-  
+
     sendByte(0x12);
     bcc = 0x12;
-    
+
     for(i=0; i < len; i++) {
       sendByte(data[i]);
       bcc = bcc + data[i];
@@ -192,14 +136,14 @@ void EDIPTFT::smallProtoSelect(char address) {
     0x03,'A','S',address
   };
   sendSmallDC2(command,4);
-}  
+}
 
 void EDIPTFT::smallProtoDeselect(char address) {
   char command [] = {
     0x03,'A','D',address
   };
   sendSmallDC2(command,4);
-}  
+}
 
 unsigned char EDIPTFT::datainBuffer() {
   unsigned char result;
@@ -213,7 +157,7 @@ unsigned char EDIPTFT::datainBuffer() {
   waitandreadByte();
   waitandreadByte();
   return result;
-}  
+}
 
 void EDIPTFT::readBuffer(char* data) {
   char len,i;
@@ -230,7 +174,7 @@ void EDIPTFT::readBuffer(char* data) {
   memcpy(data,result,len);
   waitandreadByte();
 }
-  
+
 
 void EDIPTFT::clear() {
   char command [] = {12};
@@ -316,14 +260,14 @@ void EDIPTFT::linkBargraphLight(char no) {
     27,'Y','B',no
   };
   sendData(command,4);
-}  
+}
 
 void EDIPTFT::makeBargraphTouch(char no) {
   char command [] = {
     27,'A','B',no
   };
   sendData(command,4);
-}  
+}
 
 void EDIPTFT::deleteBargraph(char no,char n1) {
   char command [] = {
@@ -407,7 +351,13 @@ void EDIPTFT::drawText(int x1, int y1, char justification,char* text) {
     lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
   };
   for (i=0;i<=6;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) helper[i+7] = text[i];
+  for (i=0;i<=len;i++) {
+      if (text[i] == '\0') {
+          len--;
+          break;
+      }
+      helper[i+7] = text[i];
+  }
   sendData(helper,len+8);
 }
 
@@ -512,7 +462,3 @@ void EDIPTFT::removeTouchArea(char code,char n1) {
   };
   sendData(command,5);
 }
-
-
-
-

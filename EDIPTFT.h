@@ -24,6 +24,8 @@
 #ifndef EDIPTFT_h
 #define EDIPTFT_h
 
+#include <Arduino.h>
+
 #define EA_BLACK 1
 #define EA_BLUE 2
 #define EA_RED 3
@@ -46,7 +48,7 @@
 
 class EDIPTFT {
   public:
-    EDIPTFT(int port, int smallprotocol);
+    EDIPTFT(int smallprotocol);
     char readByte();
     char waitandreadByte();
     unsigned char datainBuffer();
@@ -89,7 +91,6 @@ class EDIPTFT {
     void setTouchGroup(char group);
     void removeTouchArea(char code,char n1);
   private:
-    int _port;
     int _smallprotocol;
     unsigned char bytesAvailable();
     void waitBytesAvailable();
