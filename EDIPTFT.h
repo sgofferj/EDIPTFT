@@ -55,6 +55,7 @@
 
 #define NAK 0x15
 #define ACK 0x06
+#define ESC 0x1B
 
 class EDIPTFT {
   public:
@@ -63,7 +64,7 @@ class EDIPTFT {
     char readByte();
     char waitandreadByte();
     unsigned char datainBuffer();
-    void readBuffer(char* data);
+    int readBuffer(char* data);
     void smallProtoSelect(char address);
     void smallProtoDeselect(char address);
     void sendData(char* data, char len);
@@ -72,9 +73,9 @@ class EDIPTFT {
     void setDisplayColor(char fg, char bg);
     void fillDisplayColor(char bg);
     void terminalOn(boolean on);
-    void cursor(boolean on);
+    void cursorOn(boolean on);
     void setCursor(char col, char row);
-    void defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type);
+    void defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type, char mst);
     void updateBargraph(char no, char val);
     void setBargraphColor(char no, char fg, char bg, char fr);
     void makeBargraphTouch(char no);

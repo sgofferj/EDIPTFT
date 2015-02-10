@@ -162,20 +162,21 @@ unsigned char EDIPTFT::datainBuffer() {
   return result;
 }
 
-void EDIPTFT::readBuffer(char* data) {
-  char len,i;
-  char command [] = {
-    0x01,'S'
-  };
-  sendSmallDC2(command,2);
-  waitandreadByte();
-  len=waitandreadByte();
-  char result[len];
-  for (i=0;i<len;i++) {
-    result[i] = waitandreadByte();
-  }
-  memcpy(data,result,len);
-  waitandreadByte();
+int EDIPTFT::readBuffer(char* data) {
+    char len,i;
+    char command [] = {
+        0x01,'S'
+    };
+    sendSmallDC2(command,2);
+    waitandreadByte();
+    len=waitandreadByte();
+    char result[len];
+    for (i=0;i<len;i++) {
+        result[i] = waitandreadByte();
+    }
+    memcpy(data,result,len);
+    waitandreadByte();
+    return len;
 }
 
 
@@ -216,7 +217,7 @@ void EDIPTFT::terminalOn(boolean on) {
   }
 }
 
-void EDIPTFT::cursor(boolean on) {
+void EDIPTFT::cursorOn(boolean on) {
   if (on) {
     char command [] = {27,'T','C',1};
     sendData(command,4);
@@ -232,16 +233,21 @@ void EDIPTFT::setCursor(char col, char row) {
   sendData(command,5);
 }
 
-void EDIPTFT::defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type) {
+void EDIPTFT::defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type, char mst) {
   char command [] = {
     27,'B',dir,no,
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #endif
     char(sv),
     char(ev),
-    type
+    type,
+    mst
   };
-  sendData(command,15);
+  sendData(command, 8+4*COORD_SIZE);
 }
 
 void EDIPTFT::updateBargraph(char no, char val) {
@@ -282,10 +288,14 @@ void EDIPTFT::deleteBargraph(char no,char n1) {
 void EDIPTFT::defineInstrument(char no, int x1, int y1, char image, char angle, char sv, char ev) {
   char command [] = {
     27,'I','P',no,
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+    #if COORD_SIZE == 1
+        x1, y1,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+    #endif
     image,angle,sv,ev
   };
-  sendData(command,12);
+  sendData(command, 8 + 2 * COORD_SIZE);
 }
 
 void EDIPTFT::updateInstrument(char no, char val) {
@@ -427,15 +437,19 @@ void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up,
 void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text) {
   byte len = strlen(text);
   byte i;
-  char helper [len+13];
+  char helper [len+5+4*COORD_SIZE];
   char command [] = {
     27,'A','K',
-    lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-    lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #endif
     down,up
   };
-  for (i=0;i<=12;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) helper[i+13] = text[i];
+  for (i=0;i<5+4*COORD_SIZE;i++) helper[i] = command[i];
+  for (i=0;i<=len;i++) helper[i+5+4*COORD_SIZE] = text[i];
 
   sendData(helper,len+14);
 }
