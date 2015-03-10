@@ -451,7 +451,7 @@ void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char 
   for (i=0;i<5+4*COORD_SIZE;i++) helper[i] = command[i];
   for (i=0;i<=len;i++) helper[i+5+4*COORD_SIZE] = text[i];
 
-  sendData(helper,len+14);
+  sendData(helper,len+6+4*COORD_SIZE);
 }
 
 void EDIPTFT::setTouchSwitch(char code,char value) {

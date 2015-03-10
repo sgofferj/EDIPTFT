@@ -53,6 +53,16 @@
 #define EA_LIGHTBLUE 15
 #define EA_LIGHTGREY 16
 
+// Fonts
+#define EA_FONT8X8 0
+#define EA_FONT4X6 1
+#define EA_FONT6X8 2
+#define EA_FONT7X12 3
+#define EA_GENEVA10 4
+#define EA_CHICAGO14 5
+#define EA_SWISS30B 6
+#define EA_BIGZIF57 7
+
 #define NAK 0x15
 #define ACK 0x06
 #define ESC 0x1B
