@@ -67,10 +67,15 @@
 #define ACK 0x06
 #define ESC 0x1B
 
+#define uint unsigned int
+
 class EDIPTFT {
   public:
     EDIPTFT(boolean smallprotocol=true);
+
     void begin(long baud=115200);
+
+    // helper functions
     char readByte();
     char waitandreadByte();
     unsigned char datainBuffer();
@@ -78,32 +83,49 @@ class EDIPTFT {
     void smallProtoSelect(char address);
     void smallProtoDeselect(char address);
     void sendData(char* data, char len);
+
+    // Basic display functions
     void clear();
     void invert();
     void setDisplayColor(char fg, char bg);
     void fillDisplayColor(char bg);
     void terminalOn(boolean on);
+
+    // Pictures (added 2015.03 by Stefan Lehmann)
+    void loadPicture(int x1, int y1, int nr);
+
+    // Cursor
     void cursorOn(boolean on);
     void setCursor(char col, char row);
+
+    // Bargraph
     void defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type, char mst);
     void updateBargraph(char no, char val);
     void setBargraphColor(char no, char fg, char bg, char fr);
     void makeBargraphTouch(char no);
     void linkBargraphLight(char no);
     void deleteBargraph(char no,char n1);
+
+    // Instrument
     void defineInstrument(char no, int x1, int y1, char image, char angle, char sv, char ev);
     void updateInstrument(char no, char val);
     void redrawInstrument(char no);
     void deleteInstrument(char no, char n1, char n2);
+
+    // Text
     void setTextColor(char fg, char bg);
     void setTextFont(char font);
     void setTextAngle(char angle);
     void drawText(int x1, int y1, char justification,char* text);
+
+    // Rectangle and Line
     void setLineColor(char fg, char bg);
     void setLineThick(char x, char y);
     void drawLine(int x1, int y1, int x2, int y2);
     void drawRect(int x1, int y1, int x2, int y2);
     void drawRectf(int x1, int y1, int x2, int y2, char color);
+
+    // Touch keys
     void defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text);
     void defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text);
     void setTouchSwitch(char code,char value);
@@ -112,6 +134,20 @@ class EDIPTFT {
     void setTouchkeyLabelColors(char nf,char sf);
     void setTouchGroup(char group);
     void removeTouchArea(char code,char n1);
+
+    /*
+    ----------------------------------
+    Added April 2015 by Stefan Lehmann
+    Macro Calls
+    ----------------------------------
+    */
+    void callMacro(uint nr);
+    void callTouchMacro(uint nr);
+    void callMenuMacro(uint nr);
+    /*
+    ----------------------------------
+    */
+
   private:
     boolean _smallprotocol;
     unsigned char bytesAvailable();

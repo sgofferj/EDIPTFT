@@ -217,6 +217,17 @@ void EDIPTFT::terminalOn(boolean on) {
   }
 }
 
+void EDIPTFT::loadPicture(int x1, int y1, int nr) {
+    char command [] = {27, 'U', 'I',
+    #if COORD_SIZE == 1
+        x1, y1,
+    #else
+        lowByte(x1), highbyte(x1), lowByte(y1), highByte(y1),
+    #endif
+        nr};
+    sendData(command, 4 + 2 * COORD_SIZE);
+}
+
 void EDIPTFT::cursorOn(boolean on) {
   if (on) {
     char command [] = {27,'T','C',1};
@@ -494,4 +505,25 @@ void EDIPTFT::removeTouchArea(char code,char n1) {
     27,'A','L',code,n1
   };
   sendData(command,5);
+}
+
+void EDIPTFT::callMacro(uint nr) {
+  char command[] = {
+    27, 'M', 'N', nr
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::callTouchMacro(uint nr) {
+  char command[] = {
+    27, 'M', 'T', nr
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::callMenuMacro(uint nr) {
+  char command[] = {
+    27, 'M', 'M', nr
+  };
+  sendData(command, sizeof(command));
 }
