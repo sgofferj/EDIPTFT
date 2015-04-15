@@ -61,14 +61,14 @@ void EDIPTFT::sendData(char* data, char len) {
   if (DEBUG) {
     char i;
     for (i=0;i<len;i++) {
-      Serial.print(byte(data[i]),HEX);
+      Serial.print(byte(data[i]), HEX);
       Serial.print(" ");
     }
     Serial.println();
   }
 
   if (_smallprotocol) {
-    sendSmall(data,len);
+    sendSmall(data, len);
   }
   else {
     unsigned char i;
@@ -98,7 +98,7 @@ void EDIPTFT::sendSmall(char* data, char len) {
     if (bytesAvailable() > 0) {
       if (readByte() == ACK) ok = 1;
       else {
-	ok = 0;
+        ok = 0;
       }
     }
     else {
@@ -122,7 +122,7 @@ void EDIPTFT::sendSmallDC2(char* data, char len) {
       bcc = bcc + data[i];
     }
     sendByte(bcc);
-    delay(6);
+    waitBytesAvailable();
     if (bytesAvailable() > 0) {
       if (readByte() == ACK) ok = 1;
       else ok = 0;
@@ -136,24 +136,24 @@ void EDIPTFT::sendSmallDC2(char* data, char len) {
 
 void EDIPTFT::smallProtoSelect(char address) {
   char command [] = {
-    0x03,'A','S',address
+    0x03, 'A', 'S', address
   };
-  sendSmallDC2(command,4);
+  sendSmallDC2(command, sizeof(command));
 }
 
 void EDIPTFT::smallProtoDeselect(char address) {
   char command [] = {
-    0x03,'A','D',address
+    0x03, 'A', 'D', address
   };
-  sendSmallDC2(command,4);
+  sendSmallDC2(command, sizeof(command));
 }
 
 unsigned char EDIPTFT::datainBuffer() {
   unsigned char result;
   char command [] = {
-    0x01,'I'
+    0x01, 'I'
   };
-  sendSmallDC2(command,2);
+  sendSmallDC2(command, sizeof(command));
   waitandreadByte();
   waitandreadByte();
   result=waitandreadByte();
@@ -163,18 +163,18 @@ unsigned char EDIPTFT::datainBuffer() {
 }
 
 int EDIPTFT::readBuffer(char* data) {
-    char len,i;
+    char len, i;
     char command [] = {
-        0x01,'S'
+        0x01, 'S'
     };
-    sendSmallDC2(command,2);
+    sendSmallDC2(command, sizeof(command));
     waitandreadByte();
     len=waitandreadByte();
     char result[len];
     for (i=0;i<len;i++) {
         result[i] = waitandreadByte();
     }
-    memcpy(data,result,len);
+    memcpy(data, result, len);
     waitandreadByte();
     return len;
 }
@@ -182,38 +182,38 @@ int EDIPTFT::readBuffer(char* data) {
 
 void EDIPTFT::clear() {
   char command [] = {12};
-  sendData(command,1);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::invert() {
   char command [] = {
-    27,'D','I'
+    27, 'D', 'I'
   };
-  sendData(command,3);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setDisplayColor(char fg, char bg) {
   char command [] = {
-    27,'F','D',fg,bg
+    27, 'F', 'D', fg, bg
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::fillDisplayColor(char bg) {
   char command [] = {
-    27,'D','F',bg
+    27, 'D', 'F', bg
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::terminalOn(boolean on) {
   if (on) {
-    char command [] = {27,'T','E'};
-    sendData(command,3);
+    char command [] = {27, 'T', 'E'};
+    sendData(command, sizeof(command));
   }
   else {
-    char command [] = {27,'T','A'};
-    sendData(command,3);
+    char command [] = {27, 'T', 'A'};
+    sendData(command, sizeof(command));
   }
 }
 
@@ -225,145 +225,145 @@ void EDIPTFT::loadPicture(int x1, int y1, int nr) {
         lowByte(x1), highbyte(x1), lowByte(y1), highByte(y1),
     #endif
         nr};
-    sendData(command, 4 + 2 * COORD_SIZE);
+    sendData(command, sizeof(command));
 }
 
 void EDIPTFT::cursorOn(boolean on) {
   if (on) {
-    char command [] = {27,'T','C',1};
-    sendData(command,4);
+    char command [] = {27, 'T', 'C', 1};
+    sendData(command, sizeof(command));
   }
   else {
-    char command [] = {27,'T','C',0};
-    sendData(command,4);
+    char command [] = {27, 'T', 'C', 0};
+    sendData(command, sizeof(command));
   }
 }
 
 void EDIPTFT::setCursor(char col, char row) {
-  char command [] = {27,'T','P',col,row};
-  sendData(command,5);
+  char command [] = {27, 'T', 'P', col, row};
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::defineBargraph(char dir, char no, int x1, int y1, int x2, int y2, byte sv, byte ev, char type, char mst) {
   char command [] = {
-    27,'B',dir,no,
+    27, 'B', dir, no,
     #if COORD_SIZE == 1
         x1, y1, x2, y2,
     #else
-        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+        lowByte(x1), highByte(x1), lowByte(y1), highByte(y1),
+        lowByte(x2), highByte(x2), lowByte(y2), highByte(y2),
     #endif
     char(sv),
     char(ev),
     type,
     mst
   };
-  sendData(command, 8+4*COORD_SIZE);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::updateBargraph(char no, char val) {
   char command [] = {
-    27,'B','A',no,val
+    27, 'B', 'A', no, val
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setBargraphColor(char no, char fg, char bg, char fr) {
   char command [] = {
-    27,'F','B',no,fg,bg,fr
+    27, 'F', 'B', no, fg, bg, fr
   };
-  sendData(command,7);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::linkBargraphLight(char no) {
   char command [] = {
-    27,'Y','B',no
+    27, 'Y', 'B', no
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::makeBargraphTouch(char no) {
   char command [] = {
-    27,'A','B',no
+    27, 'A', 'B', no
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::deleteBargraph(char no,char n1) {
   char command [] = {
-    27,'B','D',no,n1
+    27, 'B', 'D', no, n1
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::defineInstrument(char no, int x1, int y1, char image, char angle, char sv, char ev) {
   char command [] = {
-    27,'I','P',no,
+    27, 'I', 'P', no,
     #if COORD_SIZE == 1
         x1, y1,
     #else
-        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x1), highByte(x1), lowByte(y1), highByte(y1),
     #endif
-    image,angle,sv,ev
+    image, angle, sv, ev
   };
-  sendData(command, 8 + 2 * COORD_SIZE);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::updateInstrument(char no, char val) {
   char command [] = {
-    27,'I','A',no,val
+    27, 'I', 'A', no, val
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::redrawInstrument(char no) {
   char command [] = {
-    27,'I','N',no
+    27, 'I', 'N', no
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::deleteInstrument(char no, char n1, char n2) {
   char command [] = {
-    27,'B','D',no,n1,n2
+    27, 'B', 'D', no, n1, n2
   };
-  sendData(command,6);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setLineColor(char fg, char bg) {
   char command [] = {
-    27,'F','G',fg,bg
+    27, 'F', 'G', fg, bg
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setLineThick(char x, char y) {
   char command [] = {
-    27,'G','Z',x,y
+    27, 'G', 'Z', x, y
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setTextColor(char fg, char bg) {
   char command [] = {
-    27,'F','Z',fg,bg
+    27, 'F', 'Z', fg, bg
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setTextFont(char font) {
   char command [] = {
-    27,'Z','F',font
+    27, 'Z', 'F', font
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setTextAngle(char angle) {
   // 0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°
   char command [] = {
-    27,'Z','W',angle
+    27, 'Z', 'W', angle
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::drawText(int x1, int y1, char justification,char* text) {
@@ -375,15 +375,14 @@ void EDIPTFT::drawText(int x1, int y1, char justification,char* text) {
     #if COORD_SIZE == 1
         x1, y1,
     #else
-        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x1), highByte(x1), lowByte(y1), highByte(y1),
     #endif
-
   };
-  for (i=0;i<=4;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) {
-      helper[i+5] = text[i];
+  for (i = 0; i <= 4; i++) helper[i] = command[i];
+  for (i = 0; i <= len; i++) {
+      helper[i + 5] = text[i];
   }
-  sendData(helper,len+6);
+  sendData(helper, sizeof(helper));
 }
 
 void EDIPTFT::drawLine(int x1, int y1, int x2, int y2) {
@@ -396,7 +395,7 @@ void EDIPTFT::drawLine(int x1, int y1, int x2, int y2) {
         lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
     #endif
   };
-  sendData(command,3 + 4 * COORD_SIZE);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::drawRect(int x1, int y1, int x2, int y2) {
@@ -409,7 +408,7 @@ void EDIPTFT::drawRect(int x1, int y1, int x2, int y2) {
         lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
     #endif
   };
-  sendData(command,3 + 4 * COORD_SIZE);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
@@ -423,7 +422,7 @@ void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
     #endif
     color
   };
-  sendData(command,4 + 4 * COORD_SIZE);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text) {
@@ -440,15 +439,15 @@ void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up,
     #endif
     down,up
   };
-  for (i=0;i<5+4*COORD_SIZE;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) helper[i+5+4*COORD_SIZE] = text[i];
-  sendData(helper,len+6+4*COORD_SIZE);
+  for (i = 0; i < 5 + 4 * COORD_SIZE; i++) helper[i] = command[i];
+  for (i = 0; i <= len; i++) helper[i + 5 + 4 * COORD_SIZE] = text[i];
+  sendData(helper, sizeof(helper));
 }
 
 void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text) {
   byte len = strlen(text);
   byte i;
-  char helper [len+5+4*COORD_SIZE];
+  char helper [len + 5 + 4 * COORD_SIZE];
   char command [] = {
     27,'A','K',
     #if COORD_SIZE == 1
@@ -459,52 +458,52 @@ void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char 
     #endif
     down,up
   };
-  for (i=0;i<5+4*COORD_SIZE;i++) helper[i] = command[i];
-  for (i=0;i<=len;i++) helper[i+5+4*COORD_SIZE] = text[i];
-
-  sendData(helper,len+6+4*COORD_SIZE);
+  for (i = 0; i < 5 + 4 * COORD_SIZE; i++) helper[i] = command[i];
+  for (i = 0; i <= len; i++) helper[ i + 5 + 4 * COORD_SIZE] = text[i];
+  sendData(helper, sizeof(helper));
 }
 
 void EDIPTFT::setTouchSwitch(char code,char value) {
   char command [] = {
-    27,'A','P',code,value
+    27, 'A', 'P', code, value
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
-void EDIPTFT::setTouchkeyColors(char n1, char n2, char n3, char s1, char s2, char s3) {
+void EDIPTFT::setTouchkeyColors(
+  char n1, char n2, char n3, char s1, char s2, char s3) {
   char command [] = {
-    27,'F','E',n1,n2,n3,s1,s2,s3
+    27, 'F', 'E', n1, n2, n3, s1, s2, s3
   };
-  sendData(command,9);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setTouchkeyFont(char font) {
   char command [] = {
-    27,'A','F',font
+    27, 'A', 'F', font
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
-void EDIPTFT::setTouchkeyLabelColors(char nf,char sf) {
+void EDIPTFT::setTouchkeyLabelColors(char nf, char sf) {
   char command [] = {
-    27,'F','A',nf,sf
+    27, 'F', 'A', nf, sf
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::setTouchGroup(char group) {
   char command [] = {
-    27,'A','R',group
+    27, 'A', 'R', group
   };
-  sendData(command,4);
+  sendData(command, sizeof(command));
 }
 
-void EDIPTFT::removeTouchArea(char code,char n1) {
+void EDIPTFT::removeTouchArea(char code, char n1) {
   char command [] = {
-    27,'A','L',code,n1
+    27, 'A', 'L', code, n1
   };
-  sendData(command,5);
+  sendData(command, sizeof(command));
 }
 
 void EDIPTFT::callMacro(uint nr) {
@@ -524,6 +523,13 @@ void EDIPTFT::callTouchMacro(uint nr) {
 void EDIPTFT::callMenuMacro(uint nr) {
   char command[] = {
     27, 'M', 'M', nr
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::openTouchMenu() {
+  char command [] = {
+    27, 'N', 'T', 2
   };
   sendData(command, sizeof(command));
 }

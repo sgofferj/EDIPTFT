@@ -135,18 +135,24 @@ class EDIPTFT {
     void setTouchGroup(char group);
     void removeTouchArea(char code,char n1);
 
-    /*
-    ----------------------------------
-    Added April 2015 by Stefan Lehmann
-    Macro Calls
-    ----------------------------------
-    */
+    // ----------------------------------
+    // Added April 2015 by Stefan Lehmann
+    // ----------------------------------
+
+    // Macro Calls
     void callMacro(uint nr);
     void callTouchMacro(uint nr);
     void callMenuMacro(uint nr);
-    /*
-    ----------------------------------
+
+    // Open Touch Menu
+    //! Send 'open' signal after a Menu open request has been sent from TFT.
+    /*!
+        If a toucch menu is not set to open automatically the TFT sends a
+        request 'ESC T 0'. This function sends 'ESC N T 2' to open the menu.
     */
+    void openTouchMenu();
+
+    // ----------------------------------
 
   private:
     boolean _smallprotocol;
