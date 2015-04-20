@@ -1,4 +1,4 @@
-//
+ //
 // Library for controlling Electronic Assembly eDIPTFT displays
 //
 //      Copyright (c) 2013 Stefan Gofferje. All rights reserved.
@@ -22,8 +22,8 @@
 //
 
 #include <ediptft.h>
-
 #define DEBUG false
+
 
 EDIPTFT::EDIPTFT(boolean smallprotocol) {
   _smallprotocol = smallprotocol;
@@ -366,7 +366,7 @@ void EDIPTFT::setTextAngle(char angle) {
   sendData(command, sizeof(command));
 }
 
-void EDIPTFT::drawText(int x1, int y1, char justification,char* text) {
+void EDIPTFT::drawText(int x1, int y1, char justification, char* text) {
   byte len = strlen(text);
   byte i;
   char helper [len + 4 + 2 * COORD_SIZE];
@@ -428,19 +428,19 @@ void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
 void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text) {
   byte len = strlen(text);
   byte i;
-  char helper [len + 5 + 4 * COORD_SIZE];
+  char helper [len + 6 + 4 * COORD_SIZE];
   char command [] = {
-    27,'A','T',
+    27, 'A', 'T',
     #if COORD_SIZE == 1
         x1, y1, x2, y2,
     #else
-        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
-        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+        lowByte(x1), highByte(x1), lowByte(y1), highByte(y1),
+        lowByte(x2), highByte(x2), lowByte(y2), highByte(y2),
     #endif
-    down,up
+    down, up
   };
-  for (i = 0; i < 5 + 4 * COORD_SIZE; i++) helper[i] = command[i];
-  for (i = 0; i <= len; i++) helper[i + 5 + 4 * COORD_SIZE] = text[i];
+  for (i = 0; i < (5 + 4 * COORD_SIZE); i++) helper[i] = command[i];
+  for (i = 0; i <= len+1; i++) helper[i + 5 + 4 * COORD_SIZE] = text[i];
   sendData(helper, sizeof(helper));
 }
 
@@ -459,7 +459,7 @@ void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char 
     down,up
   };
   for (i = 0; i < 5 + 4 * COORD_SIZE; i++) helper[i] = command[i];
-  for (i = 0; i <= len; i++) helper[ i + 5 + 4 * COORD_SIZE] = text[i];
+  for (i = 0; i <= len; i++) helper[i + 5 + 4 * COORD_SIZE] = text[i];
   sendData(helper, sizeof(helper));
 }
 
