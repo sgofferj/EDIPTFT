@@ -30,15 +30,15 @@ EDIPTFT::EDIPTFT(boolean smallprotocol) {
 }
 
 void EDIPTFT::begin(long baud) {
-    Serial.begin(baud);
+    SERIAL_DEV.begin(baud);
 }
 
 void EDIPTFT::sendByte(char data) {
-  Serial.write(data);
+  SERIAL_DEV.write(data);
 }
 
 char EDIPTFT::readByte() {
-  return Serial.read();
+  return SERIAL_DEV.read();
 }
 
 void EDIPTFT::waitBytesAvailable() {
@@ -54,17 +54,17 @@ char EDIPTFT::waitandreadByte() {
 
 
 unsigned char EDIPTFT::bytesAvailable() {
-    return Serial.available();
+    return SERIAL_DEV.available();
 }
 
 void EDIPTFT::sendData(char* data, char len) {
   if (DEBUG) {
     char i;
     for (i=0;i<len;i++) {
-      Serial.print(byte(data[i]), HEX);
-      Serial.print(" ");
+      SERIAL_DEV.print(byte(data[i]), HEX);
+      SERIAL_DEV.print(" ");
     }
-    Serial.println();
+    SERIAL_DEV.println();
   }
 
   if (_smallprotocol) {
@@ -217,7 +217,7 @@ void EDIPTFT::terminalOn(boolean on) {
   }
 }
 
-void EDIPTFT::loadPicture(int x1, int y1, int nr) {
+void EDIPTFT::loadImage(int x1, int y1, int nr) {
     char command [] = {27, 'U', 'I',
     #if COORD_SIZE == 1
         x1, y1,
