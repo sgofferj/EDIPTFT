@@ -99,6 +99,7 @@ class EDIPTFT {
     void invert();
 
     void setDisplayColor(char fg, char bg);
+
     void fillDisplayColor(char bg);
 
     /*! \brief Terminal on
@@ -171,6 +172,7 @@ class EDIPTFT {
      * \param val new value of the bargraph
      */
     void updateBargraph(char no, char val);
+
     void setBargraphColor(char no, char fg, char bg, char fr);
 
     /*! \brief Set bargraph by touch
@@ -180,6 +182,7 @@ class EDIPTFT {
      * \param no number of the bargraph `1..32`
      */
     void makeBargraphTouch(char no);
+
     void linkBargraphLight(char no);
 
     /*! \brief Delete bargraph
@@ -196,31 +199,135 @@ class EDIPTFT {
     void deleteBargraph(char no, char n1);
 
     // Instrument
-    void defineInstrument(char no, int x1, int y1, char image, char angle, char sv, char ev);
+    void defineInstrument(char no, int x1, int y1, char image,
+                          char angle, char sv, char ev);
     void updateInstrument(char no, char val);
     void redrawInstrument(char no);
     void deleteInstrument(char no, char n1, char n2);
 
     // Text
     void setTextColor(char fg, char bg);
+
+    /*! \brief Set font
+     *
+     * Set font with the number *font*
+     *
+     * \param font font number `font=0..15`, use font defines here
+     */
     void setTextFont(char font);
+
+    /*! \brief Set text angle
+     *
+     * Set text output angle
+     *
+     * \param angle text output angle\n
+                    `angle=0`: 0°
+                    `angle=1`: 90°
+     */
     void setTextAngle(char angle);
-    void drawText(int x1, int y1, char justification,char* text);
+
+    /*! \brief Draw text on display
+     *
+     * Draw a *text* on screen. Several lines are separated by the character `|`
+     * ($7C).
+     * * place text between `~`: characters flash on/off
+     * * place text between `@`: characters flash inversely
+     * * use `\\` as to escape special characters
+     *
+     * \param x1: x coordinate
+     * \param y1: y coordinate
+     * \param justification set text justification to `L`(eft), `R`(ight),
+     *                      `C`(enter)
+     * \param text text to draw on display
+     */
+    void drawText(int x1, int y1, char justification, char* text);
 
     // Rectangle and Line
     void setLineColor(char fg, char bg);
+
+    /*! \brief Point size/line thickness
+     *
+     * \param x x-point size (1..15)
+     * \param y y-point size (1..15)
+     */
     void setLineThick(char x, char y);
+
+    /*! \brief Draw straight line
+     *
+     * Draw straight line from point *x1*, *y1* to point *x2*, *y2*
+     */
     void drawLine(int x1, int y1, int x2, int y2);
+
+    /*! \brief Draw rectangle
+     *
+     * Draw four straight lines as a rectangle from *x1*, *y1* to *x2*, *y2*
+     */
     void drawRect(int x1, int y1, int x2, int y2);
+
     void drawRectf(int x1, int y1, int x2, int y2, char color);
 
     // Touch keys
-    void defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text);
-    void defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text);
+
+    /*! \brief Define touch key
+     *
+     * Key remains pressed as long as there is contact. The area from *x1*, *y1*
+     * to *x2*, *y2* is drawn with actual border and defined as a key.
+     * The label is drawn with the current touch font. The first character
+     * determines the alignment of the text (`L`(eft), `R`(ight), `C`(enter)).
+     * Multiline texts are separated by the character `|`.
+     *
+     * \param down return/touchmacro (1-255) if pressed
+     * \param up return/touchmacro (1-255) if released
+     * \param text label of the touch key
+     */
+    void defineTouchKey(int x1, int y1, int x2, int y2,
+                        char down, char up, char* text);
+
+    /*! \brief Define touch switch
+     *
+     * Status of the switch toggles after each contact. The area from *x1*, *y1*
+     * to *x2*, *y2* is drawn with actual border and defined as a key.
+     * The label is drawn with the current touch font. The first character
+     * determines the alignment of the text (`L`(eft), `R`(ight), `C`(enter)).
+     * Multiline texts are separated by the character `|`.
+     *
+     * \param down return/touchmacro (1-255) if pressed
+     * \param up return/touchmacro (1-255) if released
+     * \param text label of the touch key
+     */
+    void defineTouchSwitch(int x1, int y1, int x2, int y2,
+                           char down, char up, char* text);
+
+    /*! \brief Set touch switch
+     *
+     * Set the status of the touch switch with the return code *code*
+     * to *value*.
+     *
+     * \param code Return code of the switch
+     * \param value `value=0`: OFF, `value=1`: ON
+     */
     void setTouchSwitch(char code,char value);
-    void setTouchkeyColors(char n1, char n2, char n3, char s1, char s2, char s3);
+
+    void setTouchkeyColors(char n1, char n2, char n3,
+                           char s1, char s2, char s3);
+
+    /*! \brief Label font
+     *
+     * Apply font with number *font* for touch key labels
+     */
     void setTouchkeyFont(char font);
+
     void setTouchkeyLabelColors(char nf,char sf);
+
+    /*! \brief Radio group for switches
+     *
+     * `group=0`: newly defined switches don't belong to a group
+     * `group=1..255`: newly defined switches are assigned to the group with
+     *                 the given number
+     * Only one switch in a group is active at once. All others are deactivated.
+     * For switches only the *down code* is applicable. The *up code* will be
+     * ignored.
+     */
     void setTouchGroup(char group);
 
     /*! \brief Delete toch area by up- or downcode
@@ -234,8 +341,22 @@ class EDIPTFT {
     void removeTouchArea(char code,char n1);
 
     // Macro Calls
+    /*! \brief Run macro
+     *
+     * Call the (normal) macro with number *nr* (max. 7 levels).
+     */
     void callMacro(uint nr);
+
+    /*! \brief Run touch macro
+     *
+     * Call touch macro with number *nr* (max. 7 levels)
+     */
     void callTouchMacro(uint nr);
+
+    /*! \brief Run menu macro
+     *
+     * Call menu macro with number *nr* (max. 7 levels)
+     */
     void callMenuMacro(uint nr);
 
     /*! \brief Send *open* signal after a Menu open request has been sent from TFT.
