@@ -86,11 +86,17 @@ class EDIPTFT {
     void sendData(char* data, char len);
 
     // Basic display functions
-    /*! \brief Delete display
+    /*! \brief Clear display
      *
-     * Delete display contents (all pixels off)
+     * Clear display contents (all pixels off) and remove touch areas
      */
     void clear();
+
+    /*! \brief Delete display
+     *
+     * Delete display contents (all pixels off). Touch areas are still active.
+     */
+    void deleteDisplay();
 
     /*! \brief Invert display
      *
@@ -240,7 +246,7 @@ class EDIPTFT {
      *                      `C`(enter)
      * \param text text to draw on display
      */
-    void drawText(int x1, int y1, char justification, char* text);
+    void drawText(int x1, int y1, char justification, const char* text);
 
     // Rectangle and Line
     void setLineColor(char fg, char bg);
@@ -297,6 +303,21 @@ class EDIPTFT {
      */
     void defineTouchSwitch(int x1, int y1, int x2, int y2,
                            char down, char up, char* text);
+
+    /*! \brief Define touch switch with image
+     *
+     * Status of the switch toggles after each contact. Image number *img* is
+     * loaded to *x*, *y* and defined as a switch.
+     * The label is drawn with the current touch font. The first character
+     * determines the alignment of the text (`L`(eft), `R`(ight), `C`(enter)).
+     * Multiline texts are separated by the character `|`.
+     *
+     * \param down return/touchmacro (1-255) if pressed
+     * \param up return/touchmacro (1-255) if released
+     * \param text label of the touch switch
+     */
+    void defineTouchSwitch(int x, int y, int img, char downcode,
+                           char upcode, const char* text);
 
     /*! \brief Set touch switch
      *
@@ -373,7 +394,8 @@ class EDIPTFT {
      * \param text string with the key text and menu items
      */
     void defineTouchMenu(int x1, int y1, int x2, int y2,
-                         char downcode, char upcode, char mnucode, char *text);
+                         char downcode, char upcode, char mnucode,
+                         const char *text);
 
     /*! \brief Send *open* signal after a Menu open request has been sent from TFT.
      *
@@ -381,6 +403,12 @@ class EDIPTFT {
      *  request 'ESC T 0'. This function sends 'ESC N T 2' to open the menu.
      */
     void openTouchMenu();
+
+    /*! \brief Set menu font
+     *
+     * Set font with number *font* (`0..15`) for menu display
+     */
+    void setMenuFont(char font);
 
   private:
     boolean _smallprotocol;
