@@ -456,7 +456,7 @@ void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char 
         lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
         lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
     #endif
-    down,up
+    down, up
   };
   for (i = 0; i < 5 + 4 * COORD_SIZE; i++) helper[i] = command[i];
   for (i = 0; i <= len; i++) helper[i + 5 + 4 * COORD_SIZE] = text[i];
@@ -525,6 +525,27 @@ void EDIPTFT::callMenuMacro(uint nr) {
     27, 'M', 'M', nr
   };
   sendData(command, sizeof(command));
+}
+
+void EDIPTFT::defineTouchMenu(int x1, int y1, int x2, int y2,
+    char downcode, char upcode, char mnucode, char *text) {
+  byte len = strlen(text);
+  byte n = 6 + 4 * COORD_SIZE
+  char helper [len + n];
+
+  char command [] = {
+    27, 'A', 'M',
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2,
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+    #endif
+    downcode, upcode, mnucode
+  }
+  for (i = 0; i < n; i++) helper[i] = command[i];
+  for (i = 0; i <= len; i++) helper[i + n] = text[i];
+  sendData(helper, sizeof(helper));
 }
 
 void EDIPTFT::openTouchMenu() {

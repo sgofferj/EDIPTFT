@@ -359,6 +359,22 @@ class EDIPTFT {
      */
     void callMenuMacro(uint nr);
 
+    /*! \brief Define touch key with menu function
+     *
+     * Define the area from *x1*, *y1* to *x2*, *y2*  as a menu key.
+     * The first character determines the direction in which the menu opens (R=right,L=left,O=up,U=down)
+     * The second character determines the alignment of the touch text (C=center,L=left-,R=right justified)
+     * The menu items are separated by the character '|' ($7C,dec:124) (e.g. "UCkey|item1|item2|item3".
+     * The key text is written with the current touch font and the menu items are written with the current menu font. The background of the menu is saved automatically.
+     * \param downcode `1-255` return/touchmacro if pressed
+     * \param upcode `1-255` return/touchmacro if released
+     * \param mnucode return/menumacro+(item nr - 1) after selection of a
+     *                menu item
+     * \param text string with the key text and menu items
+     */
+    void defineTouchMenu(int x1, int y1, int x2, int y2,
+                         char downcode, char upcode, char mnucode, char *text);
+
     /*! \brief Send *open* signal after a Menu open request has been sent from TFT.
      *
      *  If a touch menu is not set to open automatically the TFT sends a
