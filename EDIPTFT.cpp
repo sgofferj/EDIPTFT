@@ -472,7 +472,8 @@ void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
 }
 
 
-void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up, char* text) {
+void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up,
+                             const char* text) {
   byte len = strlen(text);
   byte i;
   char helper [len + 6 + 4 * COORD_SIZE];
@@ -492,7 +493,8 @@ void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up,
 }
 
 
-void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2, char down, char up, char* text) {
+void EDIPTFT::defineTouchSwitch(int x1, int y1, int x2, int y2,
+                                char down, char up, const char* text) {
   byte len = strlen(text);
   byte i;
   char helper [len + 6 + 4 * COORD_SIZE];

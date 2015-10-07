@@ -287,7 +287,7 @@ class EDIPTFT {
      * \param text label of the touch key
      */
     void defineTouchKey(int x1, int y1, int x2, int y2,
-                        char down, char up, char* text);
+                        char down, char up, const char* text);
 
     /*! \brief Define touch switch
      *
@@ -302,7 +302,7 @@ class EDIPTFT {
      * \param text label of the touch key
      */
     void defineTouchSwitch(int x1, int y1, int x2, int y2,
-                           char down, char up, char* text);
+                           char down, char up, const char* text);
 
     /*! \brief Define touch switch with image
      *
