@@ -30,4 +30,7 @@ might complete this library.
 Documentation on the eDIPTFT series is available from
 
   http://www.lcd-module.com/
- 
+
+CAVEAT: When using Smallprotocol to communicate with the display (highly
+recommended!) via RS232, the display MUST be selected by with a select
+command, otherwise it will ignore ANY communication!

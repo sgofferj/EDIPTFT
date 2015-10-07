@@ -20,16 +20,19 @@ Library for controlling Electronic Assembly eDIPTFT displays
      Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
      Boston, MA 02110-1301 USA
 ------------------------------------------------------------------------------
+---- 10feb2015 Stefan Lehmann
+- Added support for displays with only 1 Byte display coordinates (<255 pixels):
+  eDIP128, eDIP160 and eDIP240
 
----- 24feb2013
+---- 24feb2013 Stefan Gofferje
 - Added functions for touch switches and radio groups
 
----- 03feb2013
+---- 03feb2013 Stefan Gofferje
 - Smallprotocol works!!! Yay!
 - More functions added.
 
----- 29jan2013
+---- 29jan2013 Stefan Gofferje
 - Basic functionality is there
 
----- 26jan2013
+---- 26jan2013 Stefan Gofferje
 - Project started
