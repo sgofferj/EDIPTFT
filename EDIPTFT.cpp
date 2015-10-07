@@ -644,3 +644,12 @@ void EDIPTFT::setMenuFont(char font) {
   };
   sendData(command, sizeof(command));
 }
+
+
+void EDIPTFT::setTouchMenuAutomation(bool val) {
+  char n1 = val ? 1 : 0;
+  char command [] = {
+    27, 'N', 'T', n1
+  };
+  sendData(command, sizeof(command));
+}

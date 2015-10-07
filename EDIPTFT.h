@@ -410,6 +410,14 @@ class EDIPTFT {
      */
     void setMenuFont(char font);
 
+    /*! \brief enable/disable touchmenu automation
+     *
+     * if val==true touch menu opens automatically, if val==false touchmenu
+     * doesn' t open automatically, instead a request is sent to the
+     * host computer, which can then open the menu with openTouchMenu()
+     */
+    void setTouchMenuAutomation(bool val);
+
   private:
     boolean _smallprotocol;
     unsigned char bytesAvailable();
