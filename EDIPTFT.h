@@ -24,7 +24,17 @@
 #ifndef EDIPTFT_h
 #define EDIPTFT_h
 
-#include <Arduino.h>
+// handle Arduino and Spark/Particle environments
+#if defined (SPARK)
+  #include "application.h"
+#else
+  #if defined(ARDUINO) && ARDUINO >= 100
+    #include "Arduino.h"
+  #else
+    #include "WProgram.h"
+  #endif
+  // includes only needed for Arduino platform go here
+#endif
 
 //Devices
 #define EDIP128 1
