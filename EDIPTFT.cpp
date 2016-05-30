@@ -229,6 +229,41 @@ void EDIPTFT::fillDisplayColor(char bg) {
   sendData(command, sizeof(command));
 }
 
+void EDIPTFT::displayIllumination(unsigned char on) {
+  char command [] = {
+    27, 'Y', 'L', on
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::setDisplayIlluminationLevel(unsigned char level) {
+  char command [] = {
+    27, 'Y', 'H', level
+  };
+  sendData(command, sizeof(command));
+}
+
+
+void EDIPTFT::setTouchBuzzer(boolean on) {
+  char command [] = {
+    27, 'A', 'S', on
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::soundBuzzer(unsigned char duration) {
+  char command [] = {
+    27, 'Y', 'S', duration
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::setOutputPort(unsigned char port, unsigned char value) {
+  char command [] = {
+    27, 'Y', 'W', port, value
+  };
+  sendData(command, sizeof(command));
+}
 
 void EDIPTFT::terminalOn(boolean on) {
   if (on) {
@@ -470,6 +505,62 @@ void EDIPTFT::drawRectf(int x1, int y1, int x2, int y2, char color) {
   };
   sendData(command, sizeof(command));
 }
+
+
+void EDIPTFT::clearRect(int x1, int y1, int x2, int y2) {
+  char command [] = {
+    27,'R','L',
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
+    #endif
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::invertRect(int x1, int y1, int x2, int y2) {
+  char command [] = {
+    27,'R','I',
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
+    #endif
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::fillRect(int x1, int y1, int x2, int y2) {
+  char command [] = {
+    27,'R','S',
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2)
+    #endif
+  };
+  sendData(command, sizeof(command));
+}
+
+void EDIPTFT::fillRectp(int x1, int y1, int x2, int y2, char pattern) {
+  char command [] = {
+    27,'R','M',
+    #if COORD_SIZE == 1
+        x1, y1, x2, y2, pattern
+    #else
+        lowByte(x1),highByte(x1),lowByte(y1),highByte(y1),
+        lowByte(x2),highByte(x2),lowByte(y2),highByte(y2),
+        pattern
+    #endif
+  };
+  sendData(command, sizeof(command));
+}
+
+
 
 
 void EDIPTFT::defineTouchKey(int x1, int y1, int x2, int y2, char down, char up,
