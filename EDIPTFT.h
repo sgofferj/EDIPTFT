@@ -24,7 +24,17 @@
 #ifndef EDIPTFT_h
 #define EDIPTFT_h
 
-#include <Arduino.h>
+// handle Arduino and Spark/Particle environments
+#if defined (SPARK)
+  #include "application.h"
+#else
+  #if defined(ARDUINO) && ARDUINO >= 100
+    #include "Arduino.h"
+  #else
+    #include "WProgram.h"
+  #endif
+  // includes only needed for Arduino platform go here
+#endif
 
 //Devices
 #define EDIP128 1
@@ -107,6 +117,49 @@ class EDIPTFT {
     void setDisplayColor(char fg, char bg);
 
     void fillDisplayColor(char bg);
+
+
+    /*! \brief Display illumination on/duration
+     *
+     * Terminal display illumination is switched off if \a on is zero, on if \a on is 1, switch on for n 1/10 seconds otherwise
+     *
+     * \param on determine display illumination state
+     */
+    void displayIllumination(unsigned char on);
+
+    /*! \brief Display illumination level
+     *
+     * Terminal display illumination is set to specified \a level (0 .. 255)
+     *
+     * \param level determine display illumination level (0 .. 255)
+     */
+    void setDisplayIlluminationLevel(unsigned char level);
+
+    /*! \brief Acoustic confirmation of touch operations
+     *
+     * Sound buzzer on touch operation if \a on is true
+     *
+     * \param on determine if buzzer should confirm touch operations
+     */
+    void setTouchBuzzer(boolean on);
+    
+    /*! \brief Sound buzzer
+     *
+     * Sound buzzer for \a duration 1/10th seconds
+     *
+     * \param duration 1/10th seconds (0: off, 1: on, 2..255: on for 1/10th seconds)
+     */
+    void soundBuzzer(unsigned char duration);
+    
+    /*! \brief Output port
+     *
+     * Set output port \a port to \a value
+     *
+     * \param port  Port bit to modify (1..5/1..7); if set to 0, second parameter is bitmask to set
+     * \param value 0: reset; 1: set; 2: toggle; if port is 0 this is the bitmask instead
+     */
+    void setOutputPort(unsigned char port, unsigned char value);
+
 
     /*! \brief Terminal on
      *
@@ -271,6 +324,26 @@ class EDIPTFT {
     void drawRect(int x1, int y1, int x2, int y2);
 
     void drawRectf(int x1, int y1, int x2, int y2, char color);
+    
+    /*! \brief Clear rectangle
+     *
+     * Clear rectangle from *x1*, *y1* to *x2*, *y2*
+     */
+    void clearRect(int x1, int y1, int x2, int y2);
+
+    /*! \brief Invert rectangle
+     *
+     * Invert rectangle from *x1*, *y1* to *x2*, *y2*
+     */
+    void invertRect(int x1, int y1, int x2, int y2);
+
+    /*! \brief Fill rectangle
+     *
+     * Fill rectangle from *x1*, *y1* to *x2*, *y2*
+     */
+    void fillRect(int x1, int y1, int x2, int y2);
+    void fillRectp(int x1, int y1, int x2, int y2, char pattern);
+    
 
     // Touch keys
 
